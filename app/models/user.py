@@ -6,7 +6,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=True) # 소셜 로그인만 있는 경우 null 가능
-    role_type = Column(String, nullable=True) # 배우, 감독/작가, 제작사/제작팀, 촬영/편집/스태프
+    role_type = Column(String, nullable=True) # actor, agency
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

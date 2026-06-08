@@ -8,27 +8,51 @@ from app.api import deps
 from app.core import security
 from app.core.config import settings
 from app.crud import crud_user
-from app.schemas.user import UserCreate, UserResponse
+from app.schemas.user import UserSignupActor, UserSignupAgency, UserResponse
 from app.schemas.token import Token
 
 router = APIRouter()
 
-@router.post("/signup", response_model=UserResponse)
-async def signup(
+@router.post("/signup/actor", response_model=UserResponse)
+async def signup_actor(
     *,
     db: AsyncSession = Depends(deps.get_db),
-    user_in: UserCreate,
+    user_in: UserSignupActor,
 ) -> Any:
     """
-    새로운 사용자 가입
+    배우 회원가입
     """
+    if user_in.password != user_in.password_confirm:
+        raise HTTPException(status_code=400, detail="Passwords do not match")
+        
     user = await crud_user.get_by_email(db, email=user_in.email)
     if user:
         raise HTTPException(
             status_code=400,
             detail="The user with this email already exists in the system.",
         )
-    user = await crud_user.create(db, obj_in=user_in)
+    user = await crud_user.create_actor(db, obj_in=user_in)
+    return user
+
+@router.post("/signup/agency", response_model=UserResponse)
+async def signup_agency(
+    *,
+    db: AsyncSession = Depends(deps.get_db),
+    user_in: UserSignupAgency,
+) -> Any:
+    """
+    에이전시 회원가입
+    """
+    if user_in.password != user_in.password_confirm:
+        raise HTTPException(status_code=400, detail="Passwords do not match")
+        
+    user = await crud_user.get_by_email(db, email=user_in.email)
+    if user:
+        raise HTTPException(
+            status_code=400,
+            detail="The user with this email already exists in the system.",
+        )
+    user = await crud_user.create_agency(db, obj_in=user_in)
     return user
 
 @router.post("/login", response_model=Token)
