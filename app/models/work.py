@@ -18,8 +18,10 @@ class Work(Base):
     
     # 추가 정보
     genre = Column(String, nullable=True)
+    work_type = Column(String, nullable=True) # 영화, 드라마, 웹드라마 등
     production_year = Column(Integer, nullable=True)
     description = Column(String, nullable=True)
+    poster_image_url = Column(String, nullable=True) # 공식 포스터 이미지
     
     # 대표작 및 공개 여부
     is_featured = Column(Boolean, default=False)
@@ -35,6 +37,8 @@ class WorkCredit(Base):
     work_id = Column(Integer, index=True, nullable=False)
     
     role_code = Column(String, nullable=False) # 감독, 작가, 배우, 촬영, 편집 등
+    role_weight = Column(String, nullable=True) # 주연, 조연, 단역 등 (배우용)
+    character_name = Column(String, nullable=True) # 배역 이름 (배우용)
     display_name = Column(String, nullable=False) # 표시될 이름 (미가입자 대비)
     linked_user_id = Column(Integer, index=True, nullable=True) # 연결된 가입자 ID
     
